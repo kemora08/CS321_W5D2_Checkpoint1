@@ -10,48 +10,73 @@ namespace CS321_W5D2_BlogAPI.Infrastructure.Data
     public class BlogRepository : IBlogRepository
     {
         private readonly AppDbContext _dbContext;
+        private object updatedBlog;
 
-        public BlogRepository(AppDbContext dbContext) 
+        public BlogRepository(AppDbContext dbContext)
         {
+            _dbContext = dbContext;
             // TODO: inject AppDbContext
         }
 
         public IEnumerable<Blog> GetAll()
         {
             // TODO: Retrieve all blgs. Include Blog.User.
-            throw new NotImplementedException();
+            return _dbContext.Blogs
+                  .Include(a => a.User)
+                   .ToList();
         }
 
         public Blog Get(int id)
         {
             // TODO: Retrieve the blog by id. Include Blog.User.
-            throw new NotImplementedException();
+            return _dbContext.Blogs
+               .Include(a => a.User)
+               .SingleOrDefault(b => b.Id == id);
         }
 
-        public Blog Add(Blog blog)
+        public Blog Add(Blog item)
         {
             // TODO: Add new blog
-            throw new NotImplementedException();
+            _dbContext.Blogs.Add(item);
+            _dbContext.SaveChanges();
+            return item;
         }
 
-        public Blog Update(Blog updatedItem)
+        public Blog Update(Blog blog)
         {
             // TODO: update blog
-            throw new NotImplementedException();
-            //var existingItem = _dbContext.Find(updatedItem.Id);
-            //if (existingItem == null) return null;
-            //_dbContext.Entry(existingItem)
-            //   .CurrentValues
-            //   .SetValues(updatedItem);
-            //_dbContext.Blogs.Update(existingItem);
-            //_dbContext.SaveChanges();
-            //return existingItem;
+            // get the ToDo object in the current list with this id 
+            var currentBlog = _dbContext.Blogs.Find(blog.Id);
+
+            // return null if todo to update isn't found
+            if (currentBlog == null) return null;
+
+            // NOTE: This method is already completed for you, but note
+            // how the property values are copied below.
+
+            // copy the property values from the changed todo into the
+            // one in the db. NOTE that this is much simpler than individually
+            // copying each property.
+            _dbContext.Entry(currentBlog)
+                .CurrentValues
+                .SetValues(updatedBlog);
+
+            // update the todo and save
+            _dbContext.Blogs.Update(currentBlog);
+            _dbContext.SaveChanges();
+            return currentBlog;
         }
 
         public void Remove(int id)
         {
             // TODO: remove blog
-            throw new NotImplementedException();
+            var currentBlog = _dbContext.Blogs.FirstOrDefault(b => b.Id == id);
+            if (currentBlog != null)
+            {
+                _dbContext.Blogs.Remove(currentBlog);
+                _dbContext.SaveChanges();
+            }
+
         }
     }
 }
