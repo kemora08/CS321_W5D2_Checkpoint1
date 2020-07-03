@@ -10,8 +10,7 @@ namespace CS321_W5D2_BlogAPI.Infrastructure.Data
     public class BlogRepository : IBlogRepository
     {
         private readonly AppDbContext _dbContext;
-        private object updatedBlog;
-
+       
         public BlogRepository(AppDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -59,7 +58,7 @@ namespace CS321_W5D2_BlogAPI.Infrastructure.Data
             // copying each property.
             _dbContext.Entry(currentBlog)
                 .CurrentValues
-                .SetValues(updatedBlog);
+                .SetValues(blog);
 
             // update the todo and save
             _dbContext.Blogs.Update(currentBlog);

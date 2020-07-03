@@ -10,7 +10,7 @@ namespace CS321_W5D2_BlogAPI.Infrastructure.Data
     public class PostRepository : IPostRepository
     {
         private readonly AppDbContext _dbContext;
-        private object updatedPost;
+        
 
         public PostRepository(AppDbContext dbContext) 
         {
@@ -60,7 +60,7 @@ namespace CS321_W5D2_BlogAPI.Infrastructure.Data
             // copying each property.
             _dbContext.Entry(currentPost)
                 .CurrentValues
-                .SetValues(updatedPost);
+                .SetValues(Post);
 
             // update the todo and save
             _dbContext.Posts.Update(currentPost);

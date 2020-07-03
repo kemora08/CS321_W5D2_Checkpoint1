@@ -51,14 +51,24 @@ namespace CS321_W5D2_BlogAPI.Core.Services
 
         public void Remove(int id)
         {
+           // TODO: prevent user from deleting from a blog that isn't theirs
             var post = this.Get(id);
-            // TODO: prevent user from deleting from a blog that isn't theirs
+            var currentUserId = _userService.CurrentUserId;
+            if(currentUserId != post.Blog.UserId)
+            {
+                throw new ApplicationException("You can delete a post that does not belong to you.");
+            }
             _postRepository.Remove(id);
         }
 
         public Post Update(Post updatedPost)
         {
             // TODO: prevent user from updating a blog that isn't theirs
+            var currentUserId = _userService.CurrentUserId;
+            if(currentUserId != updatedPost.Blog.UserId)
+            {
+                throw new ApplicationException("You can update a post if it does not belong to you.");
+            }
             return _postRepository.Update(updatedPost);
         }
 
